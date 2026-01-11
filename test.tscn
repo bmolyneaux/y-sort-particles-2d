@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3 uid="uid://blgoeijbp68ai"]
+
+[ext_resource type="Script" uid="uid://dbovk7hbmjtq4" path="res://addons/sorted_particles_2d/sorted_particles_2d.gd" id="1_8uh7m"]
+[ext_resource type="Texture2D" uid="uid://bdvmuc8ciogpe" path="res://icon.svg" id="2_6uqi0"]
+
+[sub_resource type="Curve" id="Curve_8uh7m"]
+_data = [Vector2(1e-05, 0), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6uqi0"]
+curve = SubResource("Curve_8uh7m")
+
+[sub_resource type="Gradient" id="Gradient_ppyta"]
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ykrsh"]
+gradient = SubResource("Gradient_ppyta")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_8uh7m"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+initial_velocity_min = 380.15
+initial_velocity_max = 380.15
+color_ramp = SubResource("GradientTexture1D_ykrsh")
+alpha_curve = SubResource("CurveTexture_6uqi0")
+hue_variation_min = -1.0
+hue_variation_max = 0.99999994
+
+[node name="Test" type="Node2D"]
+
+[node name="SortedParticles2D" type="Node2D" parent="."]
+script = ExtResource("1_8uh7m")
+emitting = true
+texture = ExtResource("2_6uqi0")
+process_material = SubResource("ParticleProcessMaterial_8uh7m")
+metadata/_custom_type_script = "uid://dbovk7hbmjtq4"
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="."]
+visible = false
+amount = 4
+texture = ExtResource("2_6uqi0")
+process_material = SubResource("ParticleProcessMaterial_8uh7m")

@@ -1,0 +1,104 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://addons/sorted_particles_2d/sorted_particles_2d.gd" id="1_sorted"]
+[ext_resource type="Texture2D" path="res://icon.svg" id="2_icon"]
+
+[sub_resource type="Gradient" id="Gradient_color"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 0.5, 0, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_ramp"]
+gradient = SubResource("Gradient_color")
+
+[sub_resource type="Curve" id="Curve_scale"]
+_data = [Vector2(0, 0.2), 0.0, 2.0, 0, 1, Vector2(0.3, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.0, 0.0, 1, 0]
+point_count = 3
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_main"]
+direction = Vector3(0, -1, 0)
+spread = 30.0
+initial_velocity_min = 100.0
+initial_velocity_max = 200.0
+angular_velocity_min = -45.0
+angular_velocity_max = 45.0
+gravity = Vector3(0, 400, 0)
+damping_min = 0.5
+damping_max = 1.5
+scale_min = 0.1
+scale_max = 0.2
+scale_curve = SubResource("Curve_scale")
+color = Color(1, 0.8, 0.2, 1)
+color_ramp = SubResource("GradientTexture1D_ramp")
+emission_shape = 3
+emission_box_extents = Vector3(50, 5, 1)
+
+[sub_resource type="GDScript" id="GDScript_main"]
+script/source = "extends Node2D
+
+func _ready() -> void:
+	# Enable Y-sorting on this node
+	y_sort_enabled = true
+	
+	# Start emitting particles
+	$SortedParticles2D.emitting = true
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed:
+		if event.keycode == KEY_SPACE:
+			$SortedParticles2D.restart()
+		elif event.keycode == KEY_E:
+			# Manual emit at mouse position
+			var mouse_pos := get_global_mouse_position()
+			var xform := Transform2D(0, mouse_pos - $SortedParticles2D.global_position)
+			xform = xform.scaled(Vector2(0.15, 0.15))
+			$SortedParticles2D.emit_particle(xform, Vector2(0, -150), Color.CYAN, Color.WHITE, 0)
+"
+
+[node name="TestScene" type="Node2D"]
+script = SubResource("GDScript_main")
+
+[node name="Background" type="ColorRect" parent="."]
+offset_right = 1152.0
+offset_bottom = 648.0
+color = Color(0.12, 0.14, 0.18, 1)
+
+[node name="Instructions" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 500.0
+offset_bottom = 100.0
+text = "SortedParticles2D Test Scene
+SPACE - Restart particles
+E - Emit single particle at mouse position
+
+Particles are Y-sorted with the colored bars below."
+
+[node name="SortedParticles2D" type="Node2D" parent="."]
+position = Vector2(576, 200)
+script = ExtResource("1_sorted")
+emitting = true
+amount = 50
+lifetime = 2.5
+speed_scale = 1.0
+explosiveness = 0.0
+randomness = 0.2
+texture = ExtResource("2_icon")
+process_material = SubResource("ParticleProcessMaterial_main")
+
+[node name="YSortReference_Top" type="Sprite2D" parent="."]
+position = Vector2(576, 250)
+scale = Vector2(8, 0.3)
+texture = ExtResource("2_icon")
+self_modulate = Color(0.2, 0.8, 0.3, 1)
+
+[node name="YSortReference_Middle" type="Sprite2D" parent="."]
+position = Vector2(576, 350)
+scale = Vector2(8, 0.3)
+texture = ExtResource("2_icon")
+self_modulate = Color(0.3, 0.5, 0.9, 1)
+
+[node name="YSortReference_Bottom" type="Sprite2D" parent="."]
+position = Vector2(576, 450)
+scale = Vector2(8, 0.3)
+texture = ExtResource("2_icon")
+self_modulate = Color(0.9, 0.3, 0.4, 1)
