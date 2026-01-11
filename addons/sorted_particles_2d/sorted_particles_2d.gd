@@ -25,6 +25,7 @@ class ParticleData:
 
 
 @export_group("Emission")
+## If [code]true[/code], particles are being emitted.
 @export var emitting: bool = false:
 	set(value):
 		emitting = value
@@ -33,20 +34,29 @@ class ParticleData:
 			_particles_emitted = 0
 			_finished_emitted = false
 
+## Number of particles emitted per cycle.
 @export_range(1, 1000000) var amount: int = 8
+## If [code]true[/code], emits particles once then stops.
 @export var one_shot: bool = false
+## Amount of time each particle will exist (in seconds).
 @export_range(0.01, 600.0, 0.01, "suffix:s") var lifetime: float = 1.0
 
 @export_group("Time")
+## Speed multiplier for the particle simulation.
 @export_range(0.0, 10.0, 0.01) var speed_scale: float = 1.0
+## Fraction of the lifetime over which to emit. 0 = spread evenly, 1 = all at once.
 @export_range(0.0, 1.0, 0.01) var explosiveness: float = 0.0
+## Randomness ratio applied to each particle's lifetime.
 @export_range(0.0, 1.0, 0.01) var randomness: float = 0.0
 
 @export_group("Drawing")
+## If [code]true[/code], particles emit relative to the node. If [code]false[/code], they use global coordinates.
 @export var local_coords: bool = false
+## The texture used for each particle sprite.
 @export var texture: Texture2D
 
 @export_group("Process Material")
+## [ParticleProcessMaterial] that defines particle behavior.
 @export var process_material: ParticleProcessMaterial
 
 

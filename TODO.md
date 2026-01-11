@@ -9,16 +9,16 @@
 
 Add `##` doc comments above each `@export` for inspector tooltips:
 
-- [ ] `emitting` - "If true, particles are being emitted."
-- [ ] `amount` - "Number of particles emitted per cycle."
-- [ ] `one_shot` - "If true, emits particles once then stops."
-- [ ] `lifetime` - "Amount of time each particle will exist (in seconds)."
-- [ ] `speed_scale` - "Speed multiplier for the particle simulation."
-- [ ] `explosiveness` - "Fraction of the lifetime over which to emit. 0 = spread evenly, 1 = all at once."
-- [ ] `randomness` - "Randomness ratio applied to each particle's lifetime."
-- [ ] `local_coords` - "If true, particles are emitted relative to the node. If false, they use global coordinates."
-- [ ] `texture` - "The texture used for each particle sprite."
-- [ ] `process_material` - "ParticleProcessMaterial that defines particle behavior."
+- [x] `emitting` - "If true, particles are being emitted."
+- [x] `amount` - "Number of particles emitted per cycle."
+- [x] `one_shot` - "If true, emits particles once then stops."
+- [x] `lifetime` - "Amount of time each particle will exist (in seconds)."
+- [x] `speed_scale` - "Speed multiplier for the particle simulation."
+- [x] `explosiveness` - "Fraction of the lifetime over which to emit. 0 = spread evenly, 1 = all at once."
+- [x] `randomness` - "Randomness ratio applied to each particle's lifetime."
+- [x] `local_coords` - "If true, particles are emitted relative to the node. If false, they use global coordinates."
+- [x] `texture` - "The texture used for each particle sprite."
+- [x] `process_material` - "ParticleProcessMaterial that defines particle behavior."
 
 ## Missing ParticleProcessMaterial Features
 
