@@ -11,7 +11,7 @@ extends Node2D
 
 signal finished
 
-# Particle data structure
+
 class ParticleData:
 	var sprite: Sprite2D
 	var age: float = 0.0
@@ -52,7 +52,6 @@ class ParticleData:
 @export var process_material: ParticleProcessMaterial
 
 
-# Internal state
 var _particles: Array[ParticleData] = []
 var _emission_time: float = 0.0
 var _particles_emitted: int = 0
@@ -70,19 +69,15 @@ func _process(delta: float) -> void:
 	
 	var scaled_delta := delta * speed_scale
 	
-	# Handle emission
 	if emitting:
 		_handle_emission(scaled_delta)
 	
 	# Update existing particles
 	_update_particles(scaled_delta)
-	
-	# Check for finished state
 	_check_finished()
 
 
 #region Material Property Accessors
-# These read directly from process_material for immediate response to changes
 
 func _get_direction() -> Vector3:
 	return process_material.direction if process_material else Vector3(1, 0, 0)
@@ -155,7 +150,6 @@ func _handle_emission(delta: float) -> void:
 	# Emit particles if we haven't emitted all for this cycle
 	if _particles_emitted < amount:
 		if emission_period <= 0.0:
-			# All particles at once (explosiveness = 1.0)
 			while _particles_emitted < amount:
 				_spawn_particle()
 				_particles_emitted += 1
@@ -179,40 +173,30 @@ func _handle_emission(delta: float) -> void:
 func _spawn_particle() -> void:
 	var particle := ParticleData.new()
 	
-	# Create sprite
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	add_child(sprite)
 	particle.sprite = sprite
 	
-	# Calculate lifetime with randomness
 	particle.lifetime = lifetime * (1.0 - randomness * _rng.randf())
 	
-	# Calculate spawn position based on emission shape
 	var spawn_offset := _get_emission_position()
-	
 	if local_coords:
 		sprite.position = spawn_offset
 		particle.spawn_position = global_position
 	else:
 		sprite.global_position = global_position + spawn_offset
 	
-	# Calculate initial velocity
 	particle.velocity = _get_initial_velocity()
-	
-	# Angular velocity
 	particle.angular_velocity = _rng.randf_range(_get_angular_velocity_min(), _get_angular_velocity_max())
 	
-	# Scale
 	var scale_value := _rng.randf_range(_get_scale_min(), _get_scale_max())
 	particle.base_scale = Vector2(scale_value, scale_value)
 	sprite.scale = particle.base_scale
 	
-	# Color
 	particle.base_color = _get_color()
 	sprite.modulate = particle.base_color
 	
-	# Damping
 	particle.damping = _rng.randf_range(_get_damping_min(), _get_damping_max())
 	
 	_particles.append(particle)
@@ -248,20 +232,15 @@ func _get_initial_velocity() -> Vector2:
 	var vel_min := _get_initial_velocity_min()
 	var vel_max := _get_initial_velocity_max()
 	
-	# Get base direction (in 2D we use x and y components)
 	var dir_2d := Vector2(direction.x, direction.y).normalized()
 	if dir_2d.length_squared() < 0.001:
 		dir_2d = Vector2.RIGHT
 	
-	# Apply spread
 	var spread_rad := deg_to_rad(spread)
 	var angle := dir_2d.angle() + _rng.randf_range(-spread_rad, spread_rad)
 	var final_direction := Vector2(cos(angle), sin(angle))
 	
-	# Apply velocity magnitude
-	var velocity_magnitude := _rng.randf_range(vel_min, vel_max)
-	
-	return final_direction * velocity_magnitude
+	return final_direction * _rng.randf_range(vel_min, vel_max)
 
 
 func _update_particles(delta: float) -> void:
@@ -278,38 +257,30 @@ func _update_particles(delta: float) -> void:
 		var particle := _particles[i]
 		particle.age += delta
 		
-		# Check if particle should die
 		if particle.age >= particle.lifetime:
 			particles_to_remove.append(i)
 			continue
 		
 		var life_ratio := particle.age / particle.lifetime
 		
-		# Apply gravity
 		particle.velocity += gravity_2d * delta
 		
-		# Apply damping
 		if particle.damping > 0.0:
-			var damping_factor := 1.0 - particle.damping * delta
-			damping_factor = maxf(damping_factor, 0.0)
+			var damping_factor := maxf(1.0 - particle.damping * delta, 0.0)
 			particle.velocity *= damping_factor
 		
-		# Update position
 		if local_coords:
 			particle.sprite.position += particle.velocity * delta
 		else:
 			particle.sprite.global_position += particle.velocity * delta
 		
-		# Update rotation
 		particle.sprite.rotation += deg_to_rad(particle.angular_velocity) * delta
 		
-		# Update scale from curve
 		var scale_multiplier := 1.0
 		if scale_curve and scale_curve.curve:
 			scale_multiplier = scale_curve.curve.sample(life_ratio)
 		particle.sprite.scale = particle.base_scale * scale_multiplier
 		
-		# Update color from ramp and alpha from curve
 		var final_color: Color
 		if color_ramp_1d and color_ramp_1d.gradient:
 			final_color = particle.base_color * color_ramp_1d.gradient.sample(life_ratio)
@@ -339,13 +310,11 @@ func _check_finished() -> void:
 
 ## Restarts the particle emission, clearing all existing particles.
 func restart() -> void:
-	# Clear all existing particles
 	for particle in _particles:
 		if is_instance_valid(particle.sprite):
 			particle.sprite.queue_free()
 	_particles.clear()
 	
-	# Reset emission state
 	_emission_time = 0.0
 	_particles_emitted = 0
 	_finished_emitted = false
@@ -353,44 +322,26 @@ func restart() -> void:
 
 
 ## Emits a single particle with manual transform and velocity.
-## [param xform]: The transform for the particle.
-## [param velocity]: Initial velocity of the particle.
-## [param color]: Color modulation for the particle.
-## [param custom]: Custom data (stored but not used in basic implementation).
-## [param flags]: Emission flags (reserved for future use).
 func emit_particle(xform: Transform2D, velocity: Vector2, color: Color, custom: Color, flags: int) -> void:
 	var particle := ParticleData.new()
 	
-	# Create sprite
 	var sprite := Sprite2D.new()
 	sprite.texture = texture
 	add_child(sprite)
 	particle.sprite = sprite
 	
-	# Apply transform
 	if local_coords:
 		sprite.transform = xform
 		particle.spawn_position = global_position
 	else:
 		sprite.global_transform = global_transform * xform
 	
-	# Set velocity
 	particle.velocity = velocity
-	
-	# Calculate lifetime with randomness
 	particle.lifetime = lifetime * (1.0 - randomness * _rng.randf())
-	
-	# Angular velocity
 	particle.angular_velocity = _rng.randf_range(_get_angular_velocity_min(), _get_angular_velocity_max())
-	
-	# Scale from transform
 	particle.base_scale = xform.get_scale()
-	
-	# Color
 	particle.base_color = color
 	sprite.modulate = color
-	
-	# Damping
 	particle.damping = _rng.randf_range(_get_damping_min(), _get_damping_max())
 	
 	_particles.append(particle)
