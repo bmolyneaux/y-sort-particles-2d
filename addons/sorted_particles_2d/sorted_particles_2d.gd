@@ -41,11 +41,9 @@ class ParticleData:
 @export_range(0.0, 10.0, 0.01) var speed_scale: float = 1.0
 @export_range(0.0, 1.0, 0.01) var explosiveness: float = 0.0
 @export_range(0.0, 1.0, 0.01) var randomness: float = 0.0
-@export var fract_delta: bool = true
 
 @export_group("Drawing")
 @export var local_coords: bool = false
-@export var visibility_rect: Rect2 = Rect2(-4, -4, 8, 8)
 @export var texture: Texture2D
 
 @export_group("Process Material")

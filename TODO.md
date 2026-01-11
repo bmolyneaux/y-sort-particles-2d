@@ -2,8 +2,8 @@
 
 ## Code Cleanup
 
-- [ ] Remove unused `fract_delta` property (exported but never used)
-- [ ] Remove unused `visibility_rect` property (exported but never used for culling)
+- [x] Remove unused `fract_delta` property (exported but never used)
+- [x] Remove unused `visibility_rect` property (exported but never used for culling)
 
 ## Export Hints
 
