@@ -2,6 +2,8 @@
 
 A Godot 4 addon that provides a particle system compatible with Y-sorting. Unlike `GPUParticles2D`, each particle is spawned as a `Sprite2D` child node, allowing particles to properly sort with other 2D elements based on their Y position.
 
+**AI Disclaimer:** This project is entirely AI-generated.
+
 ## Why?
 
 Godot's built-in `GPUParticles2D` renders all particles as a single draw call on the GPU, which means particles cannot participate in Y-sorting with other nodes. This addon solves that by simulating particles on the CPU and spawning each as an individual `Sprite2D`.
@@ -16,17 +18,7 @@ Godot's built-in `GPUParticles2D` renders all particles as a single draw call on
 
 ## Usage
 
-`YSortParticles2D` uses the same `ParticleProcessMaterial` as `GPUParticles2D`, so you can configure particle behavior the same way:
-
-```gdscript
-var particles = $YSortParticles2D
-particles.texture = preload("res://particle.png")
-particles.process_material = ParticleProcessMaterial.new()
-particles.process_material.gravity = Vector3(0, 980, 0)
-particles.process_material.initial_velocity_min = 100
-particles.process_material.initial_velocity_max = 200
-particles.emitting = true
-```
+`YSortParticles2D` uses the same `ParticleProcessMaterial` as `GPUParticles2D`, so you can configure particle behavior the same way.
 
 For Y-sorting to work, ensure the parent node has `y_sort_enabled = true`.
 
