@@ -21,6 +21,8 @@ class ParticleData:
 	var base_scale: Vector2 = Vector2.ONE
 	var base_color: Color = Color.WHITE
 	var damping: float = 0.0
+	var radial_accel: float = 0.0
+	var origin_offset: Vector2 = Vector2.ZERO  # Offset from emitter origin at spawn
 	var spawn_position: Vector2 = Vector2.ZERO  # For local_coords
 
 
@@ -114,6 +116,15 @@ func _get_damping_min() -> float:
 func _get_damping_max() -> float:
 	return process_material.damping_max if process_material else 0.0
 
+func _get_radial_accel_min() -> float:
+	return process_material.radial_accel_min if process_material else 0.0
+
+func _get_radial_accel_max() -> float:
+	return process_material.radial_accel_max if process_material else 0.0
+
+func _get_radial_accel_curve() -> CurveTexture:
+	return process_material.radial_accel_curve if process_material else null
+
 func _get_scale_min() -> float:
 	return process_material.scale_min if process_material else 1.0
 
@@ -189,6 +200,7 @@ func _spawn_particle() -> void:
 	particle.lifetime = lifetime * (1.0 - randomness * _rng.randf())
 	
 	var spawn_offset := _get_emission_position()
+	particle.origin_offset = spawn_offset
 	if local_coords:
 		sprite.position = spawn_offset
 		particle.spawn_position = global_position
@@ -206,6 +218,7 @@ func _spawn_particle() -> void:
 	sprite.modulate = particle.base_color
 	
 	particle.damping = _rng.randf_range(_get_damping_min(), _get_damping_max())
+	particle.radial_accel = _rng.randf_range(_get_radial_accel_min(), _get_radial_accel_max())
 	
 	_particles.append(particle)
 
@@ -258,6 +271,7 @@ func _update_particles(delta: float) -> void:
 	var color_ramp := _get_color_ramp()
 	var color_ramp_1d := color_ramp as GradientTexture1D
 	var alpha_curve := _get_alpha_curve()
+	var radial_accel_curve := _get_radial_accel_curve()
 	
 	var particles_to_remove: Array[int] = []
 	
@@ -270,6 +284,21 @@ func _update_particles(delta: float) -> void:
 			continue
 		
 		var life_ratio := particle.age / particle.lifetime
+		
+		# Calculate current offset from emitter origin for radial direction
+		var current_offset: Vector2
+		if local_coords:
+			current_offset = particle.sprite.position
+		else:
+			current_offset = particle.sprite.global_position - global_position
+		
+		# Apply radial acceleration (away from origin)
+		if particle.radial_accel != 0.0 and current_offset.length_squared() > 0.001:
+			var radial_dir := current_offset.normalized()
+			var radial_accel_value := particle.radial_accel
+			if radial_accel_curve and radial_accel_curve.curve:
+				radial_accel_value *= radial_accel_curve.curve.sample(life_ratio)
+			particle.velocity += radial_dir * radial_accel_value * delta
 		
 		particle.velocity += gravity_2d * delta
 		
@@ -338,6 +367,7 @@ func emit_particle(xform: Transform2D, velocity: Vector2, color: Color, custom: 
 	add_child(sprite)
 	particle.sprite = sprite
 	
+	particle.origin_offset = xform.origin
 	if local_coords:
 		sprite.transform = xform
 		particle.spawn_position = global_position
@@ -351,6 +381,7 @@ func emit_particle(xform: Transform2D, velocity: Vector2, color: Color, custom: 
 	particle.base_color = color
 	sprite.modulate = color
 	particle.damping = _rng.randf_range(_get_damping_min(), _get_damping_max())
+	particle.radial_accel = _rng.randf_range(_get_radial_accel_min(), _get_radial_accel_max())
 	
 	_particles.append(particle)
 

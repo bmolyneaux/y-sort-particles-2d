@@ -23,7 +23,7 @@ Add `##` doc comments above each `@export` for inspector tooltips:
 ## Missing ParticleProcessMaterial Features
 
 ### High Priority
-- [ ] `radial_accel_min` / `radial_accel_max` - Acceleration away from emission origin
+- [x] `radial_accel_min` / `radial_accel_max` / `radial_accel_curve` - Acceleration away from emission origin
 - [ ] `tangential_accel_min` / `tangential_accel_max` - Acceleration perpendicular to velocity
 - [ ] `linear_accel_min` / `linear_accel_max` - Constant acceleration in initial direction
 - [ ] `emission_ring_axis` / `emission_ring_height` / `emission_ring_radius` / `emission_ring_inner_radius` - Ring emission shape
