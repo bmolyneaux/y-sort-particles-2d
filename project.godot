@@ -10,11 +10,11 @@ config_version=5
 
 [application]
 
-config/name="SortedParticles2D"
-run/main_scene="res://test_scene.tscn"
+config/name="YSortParticles2D"
+run/main_scene="uid://blgoeijbp68ai"
 config/features=PackedStringArray("4.5", "Forward Plus")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/sorted_particles_2d/plugin.cfg")
+enabled=PackedStringArray("res://addons/y_sort_particles_2d/plugin.cfg")

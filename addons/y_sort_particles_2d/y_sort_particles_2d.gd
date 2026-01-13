@@ -1,5 +1,5 @@
 @tool
-class_name SortedParticles2D
+class_name YSortParticles2D
 extends Node2D
 ## A particle system that spawns Sprite2D children for Y-sort compatibility.
 ## Unlike GPUParticles2D, each particle is a separate Sprite2D node that participates in Y-sorting.

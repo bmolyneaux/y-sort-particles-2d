@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://blgoeijbp68ai"]
 
-[ext_resource type="Script" uid="uid://dbovk7hbmjtq4" path="res://addons/sorted_particles_2d/sorted_particles_2d.gd" id="1_8uh7m"]
+[ext_resource type="Script" path="res://addons/y_sort_particles_2d/y_sort_particles_2d.gd" id="1_8uh7m"]
 [ext_resource type="Texture2D" uid="uid://bdvmuc8ciogpe" path="res://icon.svg" id="2_6uqi0"]
 
 [sub_resource type="Curve" id="Curve_8uh7m"]
@@ -22,15 +22,13 @@ radial_accel_curve = SubResource("CurveTexture_6uqi0")
 
 [node name="Test" type="Node2D"]
 
-[node name="SortedParticles2D" type="Node2D" parent="."]
-visible = false
+[node name="YSortParticles2D" type="Node2D" parent="."]
 script = ExtResource("1_8uh7m")
 emitting = true
 texture = ExtResource("2_6uqi0")
 process_material = SubResource("ParticleProcessMaterial_8uh7m")
-metadata/_custom_type_script = "uid://dbovk7hbmjtq4"
 
 [node name="GPUParticles2D" type="GPUParticles2D" parent="."]
-amount = 4
+visible = false
 texture = ExtResource("2_6uqi0")
 process_material = SubResource("ParticleProcessMaterial_8uh7m")

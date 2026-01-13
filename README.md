@@ -1,4 +1,4 @@
-# SortedParticles2D
+# YSortParticles2D
 
 A Godot 4 addon that provides a particle system compatible with Y-sorting. Unlike `GPUParticles2D`, each particle is spawned as a `Sprite2D` child node, allowing particles to properly sort with other 2D elements based on their Y position.
 
@@ -10,16 +10,16 @@ Godot's built-in `GPUParticles2D` renders all particles as a single draw call on
 
 ## Installation
 
-1. Copy the `addons/sorted_particles_2d` folder into your project's `addons/` directory
+1. Copy the `addons/y_sort_particles_2d` folder into your project's `addons/` directory
 2. Enable the plugin in **Project → Project Settings → Plugins**
-3. Add a `SortedParticles2D` node to your scene
+3. Add a `YSortParticles2D` node to your scene
 
 ## Usage
 
-`SortedParticles2D` uses the same `ParticleProcessMaterial` as `GPUParticles2D`, so you can configure particle behavior the same way:
+`YSortParticles2D` uses the same `ParticleProcessMaterial` as `GPUParticles2D`, so you can configure particle behavior the same way:
 
 ```gdscript
-var particles = $SortedParticles2D
+var particles = $YSortParticles2D
 particles.texture = preload("res://particle.png")
 particles.process_material = ParticleProcessMaterial.new()
 particles.process_material.gravity = Vector3(0, 980, 0)
@@ -41,9 +41,7 @@ For Y-sorting to work, ensure the parent node has `y_sort_enabled = true`.
 | `speed_scale` | float | 1.0 | Simulation speed multiplier |
 | `explosiveness` | float | 0.0 | Fraction of lifetime over which to emit (0=spread, 1=instant) |
 | `randomness` | float | 0.0 | Randomness applied to particle lifetime |
-| `fract_delta` | bool | true | Fractional delta time handling |
 | `local_coords` | bool | false | Emit in local vs global coordinates |
-| `visibility_rect` | Rect2 | (-4,-4,8,8) | Visibility culling bounds |
 | `texture` | Texture2D | null | Sprite texture for particles |
 | `process_material` | ParticleProcessMaterial | null | Material defining particle behavior |
 
@@ -69,7 +67,7 @@ The following properties are read from the assigned `ParticleProcessMaterial`:
 - **Direction:** `direction`, `spread`
 - **Velocity:** `initial_velocity_min`, `initial_velocity_max`
 - **Angular:** `angular_velocity_min`, `angular_velocity_max`
-- **Physics:** `gravity`, `damping_min`, `damping_max`
+- **Physics:** `gravity`, `damping_min`, `damping_max`, `radial_accel_min`, `radial_accel_max`, `radial_accel_curve`
 - **Scale:** `scale_min`, `scale_max`, `scale_curve`
 - **Color:** `color`, `color_ramp`, `alpha_curve`
 
